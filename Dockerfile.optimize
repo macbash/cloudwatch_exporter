@@ -1,0 +1,11 @@
+FROM openjdk:17-alpine as runner
+LABEL maintainer="The Prometheus Authors <prometheus-developers@googlegroups.com>"
+ENV CLOUDWATCH_EXPORTER_VERSION 0.12.2
+RUN apk update  && apk add curl
+RUN curl -o /cloudwatch_exporter.jar -sSfL https://github.com/prometheus/cloudwatch_exporter/releases/download/v${CLOUDWATCH_EXPORTER_VERSION}/cloudwatch_exporter-${CLOUDWATCH_EXPORTER_VERSION}.jar
+EXPOSE 9106
+
+WORKDIR /
+RUN mkdir /config
+ENTRYPOINT [ "java", "-jar", "/cloudwatch_exporter.jar", "9106"]
+CMD ["/config/config.yml"]
