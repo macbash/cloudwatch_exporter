@@ -1,0 +1,11 @@
+FROM prom/cloudwatch-exporter as builder
+FROM openjdk:17-alpine
+LABEL maintainer="The Prometheus Authors <prometheus-developers@googlegroups.com>"
+RUN apk update
+COPY --from=builder /cloudwatch_exporter.jar /cloudwatch_exporter.jar
+EXPOSE 9106
+
+WORKDIR /
+RUN mkdir /config
+ENTRYPOINT [ "java", "-jar", "/cloudwatch_exporter.jar", "9106"]
+CMD ["/config/config.yml"]
